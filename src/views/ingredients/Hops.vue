@@ -13,19 +13,11 @@
       >
     </ul>
     <br />
-
-    <!-- <appHopDetail :activeHop="activeHop" v-if="activeHop" /> -->
     <router-view :activeHop="activeHop" />
   </div>
 </template>
 
 <script>
-//import HopDetail from "./HopDetail.vue";
-import axios from "axios";
-
-const API_URL =
-  "https://h9r17g8juh.execute-api.us-west-2.amazonaws.com/latest/";
-
 export default {
   data() {
     return {
@@ -37,15 +29,8 @@ export default {
       return this.$store.state.hopsList;
     },
   },
-  // components: {
-  //   appHopDetail: HopDetail
-  // },
   beforeMount() {
-    if (this.$store.state.hopsList.length == 0) {
-      axios.get(API_URL + "ingredients/hops").then((response) => {
-        this.$store.state.hopsList = response.data.hops;
-      });
-    }
+    this.$store.dispatch("loadHops");
   },
 };
 </script>
