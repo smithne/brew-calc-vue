@@ -1,22 +1,17 @@
 <template>
   <div>
-    <p>Hop detail for id: {{ $route.params.id }}</p>
     <h1 class="subtitle">{{ hop.name }}</h1>
     <p>Description: {{ hop.description }}</p>
+    <p>Alpha Acids: {{ hop.alpha }}%</p>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      hop: null
-    };
+  computed: {
+    hop() {
+      return this.$store.getters.findHopById(this.$route.params.id);
+    },
   },
-  updated() {
-    this.hop = this.$store.state.hops.find(
-      obj => obj.id == this.$route.params.id
-    );
-  }
 };
 </script>

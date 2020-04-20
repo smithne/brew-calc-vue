@@ -29,19 +29,23 @@ const API_URL =
 export default {
   data() {
     return {
-      hops: [],
-      activeHop: null
+      activeHop: null,
     };
+  },
+  computed: {
+    hops() {
+      return this.$store.state.hopsList;
+    },
   },
   // components: {
   //   appHopDetail: HopDetail
   // },
-  mounted() {
-    axios.get(API_URL + "ingredients/hops").then(response => {
-      this.hops = response.data.hops;
-      console.log(this);
-      this.$store.state.hops = this.hops;
-    });
-  }
+  beforeMount() {
+    if (this.$store.state.hopsList.length == 0) {
+      axios.get(API_URL + "ingredients/hops").then((response) => {
+        this.$store.state.hopsList = response.data.hops;
+      });
+    }
+  },
 };
 </script>
