@@ -26,6 +26,7 @@ export const store = new Vuex.Store({
   },
   actions: {
     loadHops: (context) => {
+      // could also destructure to '({ state, commit })' instead of '(context)'
       if (context.state.hopsList.length == 0) {
         axios.get(API_URL + "ingredients/hops").then((response) => {
           context.commit("setHops", response.data.hops);

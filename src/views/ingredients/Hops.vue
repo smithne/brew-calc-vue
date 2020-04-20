@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -29,8 +30,11 @@ export default {
       return this.$store.state.hopsList;
     },
   },
+  methods: {
+    ...mapActions(["loadHops"]),
+  },
   beforeMount() {
-    this.$store.dispatch("loadHops");
+    this.loadHops();
   },
 };
 </script>

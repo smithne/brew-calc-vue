@@ -7,10 +7,12 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   computed: {
+    ...mapGetters(["findHopById"]),
     hop() {
-      return this.$store.getters.findHopById(this.$route.params.id);
+      return this.findHopById(this.$route.params.id);
     },
   },
 };
