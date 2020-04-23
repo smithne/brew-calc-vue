@@ -56,7 +56,22 @@
           <br /><br />
         </div>
         <h2 class="subtitle">Hops</h2>
-
+        <div
+          class="field is-horizontal is-grouped-centered is-grouped-multiline"
+        >
+          <b-field label="Find a Hop">
+            <b-autocomplete
+              v-model="hopName"
+              :data="filteredHopArray"
+              placeholder="e.g. Citra"
+              icon="search"
+              clearable
+              @select="(option) => (selectedHop = option)"
+            >
+              <template slot="empty">No results found</template>
+            </b-autocomplete>
+          </b-field>
+        </div>
         <h2 class="subtitle">Yeast</h2>
         <div class="field is-horizontal is-grouped-centered">
           <label class="field-label is-normal">Strain</label>
@@ -94,11 +109,35 @@ export default {
         efficiency: 80,
         hops: [{ name: "", ibu: null, amount: 0 }],
         fermentables: [{ name: "", ppg: null, amount: 0 }],
-        yeast: { strain: "US-05", attenuation: 85 }
-      }
+        yeast: { strain: "US-05", attenuation: 85 },
+      },
+      availableHops: [
+        "Amarillo",
+        "Citra",
+        "Cascade",
+        "Centennial",
+        "Mt. Hood",
+        "Nugget",
+        "Saaz",
+        "Simcoe",
+        "Perle",
+        "Northern Brewer",
+      ],
+      selectedHop: null,
+      hopName: "",
     };
   },
   computed: {
+    filteredHopArray() {
+      return this.availableHops.filter((option) => {
+        return (
+          option
+            .toString()
+            .toLowerCase()
+            .indexOf(this.hopName.toLowerCase()) >= 0
+        );
+      });
+    },
     ibu() {
       return 10;
     },
@@ -112,7 +151,7 @@ export default {
     },
     startingGravity() {
       let points = 0;
-      this.recipe.fermentables.forEach(item => {
+      this.recipe.fermentables.forEach((item) => {
         if (item.ppg) {
           points += item.ppg * item.amount;
         }
@@ -128,7 +167,7 @@ export default {
     },
     srm() {
       return 10.5;
-    }
+    },
   },
   methods: {
     addHop() {
@@ -139,7 +178,7 @@ export default {
     },
     addFermentable() {
       this.recipe.fermentables.push({ name: "", ppg: null, amount: 0 });
-    }
-  }
+    },
+  },
 };
 </script>
