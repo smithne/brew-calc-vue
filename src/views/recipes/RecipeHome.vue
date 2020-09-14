@@ -4,25 +4,39 @@
     <div class="columns">
       <div class="column is-three-quarters">
         <h2 class="subtitle">Basics</h2>
-        <div class="field has-addons">
-          <label class="field-label is-normal">Batch Size</label>
-          <div class="control">
-            <input type="number" class="input" v-model="recipe.batchSize" />
-          </div>
-          <p class="control"><a class="button is-static">Gallons</a></p>
-        </div>
-        <div class="field has-addons">
-          <label class="field-label is-normal">Efficiency</label>
-          <div class="control">
-            <input type="number" class="input" v-model="recipe.efficiency" />
-          </div>
+
+        <b-field label="Batch Size" label-position="on-border">
+          <b-input type="number" v-model="recipe.batchSize"></b-input>
           <p class="control">
-            <a class="button is-static">
-              %
-            </a>
+            <span class="button is-static">Gallons</span>
           </p>
-        </div>
+        </b-field>
+
+        <b-field label="Efficiency" label-position="on-border">
+          <b-input type="number" v-model="recipe.efficiency"></b-input>
+          <p class="control">
+            <span class="button is-static">%</span>
+          </p>
+        </b-field>
+
         <h2 class="subtitle">Fermentables</h2>
+
+        <b-field grouped>
+          <b-field label="Grain" label-position="on-border" expanded>
+            <b-input placeholder="Search..."></b-input>
+          </b-field>
+          <b-field label="PPG" label-position="on-border">
+            <b-input></b-input>
+          </b-field>
+          <b-field label="Weight" label-position="on-border">
+            <b-input></b-input>
+          </b-field>
+          <button class="button is-small is-danger is-normal" @click="removeFermentable(key)">
+            <b-icon icon="times" size="is-small"></b-icon>
+          </button>
+          <!-- ppg, amount -->
+        </b-field>
+
         <div
           class="field is-horizontal is-grouped-centered is-grouped-multiline"
           v-for="(malt, key) in recipe.fermentables"
@@ -41,29 +55,25 @@
             <input type="number" class="input" v-model.lazy="malt.amount" />
           </div>
           <div class="control">
-            <button
-              class="button is-small is-danger  is-normal"
-              @click="removeFermentable(key)"
-            >
+            <button class="button is-small is-danger is-normal" @click="removeFermentable(key)">
               <b-icon icon="times" size="is-small"></b-icon>
             </button>
           </div>
         </div>
         <div class="control">
-          <button class="button is-primary is-small" @click="addFermentable">
-            Add Fermentable
-          </button>
-          <br /><br />
+          <button class="button is-primary is-small" @click="addFermentable">Add Fermentable</button>
+          <br />
+          <br />
         </div>
         <h2 class="subtitle">Hops</h2>
-        <div
-          class="field is-horizontal is-grouped-centered is-grouped-multiline"
-        >
+        <div class="field is-horizontal is-grouped-centered is-grouped-multiline">
           <b-field label="Find a Hop">
             <b-autocomplete
               v-model="hopName"
               :data="filteredHopArray"
+              field="name"
               placeholder="e.g. Citra"
+              :open-on-focus="true"
               icon="search"
               clearable
               @select="(option) => (selectedHop = option)"
@@ -80,11 +90,7 @@
           </div>
           <label class="field-label is-normal">Attenuation</label>
           <div class="control">
-            <input
-              type="number"
-              class="input"
-              v-model="recipe.yeast.attenuation"
-            />
+            <input type="number" class="input" v-model="recipe.yeast.attenuation" />
           </div>
         </div>
       </div>
@@ -101,6 +107,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   data() {
     return {
@@ -109,7 +117,7 @@ export default {
         efficiency: 80,
         hops: [{ name: "", ibu: null, amount: 0 }],
         fermentables: [{ name: "", ppg: null, amount: 0 }],
-        yeast: { strain: "US-05", attenuation: 85 },
+        yeast: { strain: "US-05", attenuation: 85 }
       },
       availableHops: [
         "Amarillo",
@@ -121,22 +129,24 @@ export default {
         "Saaz",
         "Simcoe",
         "Perle",
-        "Northern Brewer",
+        "Northern Brewer"
       ],
       selectedHop: null,
-      hopName: "",
+      hopName: ""
     };
   },
   computed: {
     filteredHopArray() {
-      return this.availableHops.filter((option) => {
-        return (
-          option
-            .toString()
-            .toLowerCase()
-            .indexOf(this.hopName.toLowerCase()) >= 0
-        );
-      });
+      return this.hops
+        .filter(option => {
+          return (
+            option.name
+              .toString()
+              .toLowerCase()
+              .indexOf(this.hopName.toLowerCase()) >= 0
+          );
+        })
+        .slice(0, 5); // show max of 5 elements
     },
     ibu() {
       return 10;
@@ -151,7 +161,7 @@ export default {
     },
     startingGravity() {
       let points = 0;
-      this.recipe.fermentables.forEach((item) => {
+      this.recipe.fermentables.forEach(item => {
         if (item.ppg) {
           points += item.ppg * item.amount;
         }
@@ -168,8 +178,12 @@ export default {
     srm() {
       return 10.5;
     },
+    hops() {
+      return this.$store.state.hopsList;
+    }
   },
   methods: {
+    ...mapActions(["loadHops"]),
     addHop() {
       this.recipe.hops.push({ name: "", ibu: null, amount: 0 });
     },
@@ -178,7 +192,10 @@ export default {
     },
     addFermentable() {
       this.recipe.fermentables.push({ name: "", ppg: null, amount: 0 });
-    },
+    }
   },
+  beforeMount() {
+    this.loadHops();
+  }
 };
 </script>
