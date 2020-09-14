@@ -37,19 +37,22 @@
           <!-- ppg, amount -->
         </b-field>
 
+        <!-- update to buefy -->
         <div class="control">
           <button class="button is-primary is-small" @click="addFermentable">Add Fermentable</button>
           <br />
           <br />
         </div>
+
         <h2 class="subtitle">Hops</h2>
-        <div class="field is-horizontal is-grouped-centered is-grouped-multiline">
-          <b-field label="Find a Hop">
+
+        <b-field grouped>
+          <b-field label="Hop" label-position="on-border">
             <b-autocomplete
               v-model="hopName"
               :data="filteredHopArray"
               field="name"
-              placeholder="e.g. Citra"
+              placeholder="Find a hop"
               :open-on-focus="true"
               icon="search"
               clearable
@@ -58,7 +61,8 @@
               <template slot="empty">No results found</template>
             </b-autocomplete>
           </b-field>
-        </div>
+        </b-field>
+
         <h2 class="subtitle">Yeast</h2>
         <div class="field is-horizontal is-grouped-centered">
           <label class="field-label is-normal">Strain</label>
