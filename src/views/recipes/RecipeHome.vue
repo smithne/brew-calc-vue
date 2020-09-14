@@ -21,15 +21,15 @@
 
         <h2 class="subtitle">Fermentables</h2>
 
-        <b-field grouped>
+        <b-field grouped v-for="(malt, key) in recipe.fermentables" :key="key">
           <b-field label="Grain" label-position="on-border" expanded>
-            <b-input placeholder="Search..."></b-input>
+            <b-input placeholder="Search..." v-model="malt.name"></b-input>
           </b-field>
           <b-field label="PPG" label-position="on-border">
-            <b-input></b-input>
+            <b-input v-model="malt.ppg"></b-input>
           </b-field>
           <b-field label="Weight" label-position="on-border">
-            <b-input></b-input>
+            <b-input v-model="malt.amount"></b-input>
           </b-field>
           <button class="button is-small is-danger is-normal" @click="removeFermentable(key)">
             <b-icon icon="times" size="is-small"></b-icon>
@@ -37,29 +37,6 @@
           <!-- ppg, amount -->
         </b-field>
 
-        <div
-          class="field is-horizontal is-grouped-centered is-grouped-multiline"
-          v-for="(malt, key) in recipe.fermentables"
-          :key="key"
-        >
-          <label class="field-label is-normal">Grain</label>
-          <div class="control">
-            <input type="text" class="input" v-model="malt.name" />
-          </div>
-          <label class="field-label is-normal">PPG</label>
-          <div class="control">
-            <input type="number" class="input" v-model.lazy="malt.ppg" />
-          </div>
-          <label class="field-label is-normal">Weight</label>
-          <div class="control">
-            <input type="number" class="input" v-model.lazy="malt.amount" />
-          </div>
-          <div class="control">
-            <button class="button is-small is-danger is-normal" @click="removeFermentable(key)">
-              <b-icon icon="times" size="is-small"></b-icon>
-            </button>
-          </div>
-        </div>
         <div class="control">
           <button class="button is-primary is-small" @click="addFermentable">Add Fermentable</button>
           <br />
