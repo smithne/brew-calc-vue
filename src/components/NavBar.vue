@@ -3,7 +3,7 @@
     <template slot="brand">
       <b-navbar-item tag="router-link" :to="{ name: 'home' }">
         <img src="../assets/hopIcon.svg" alt="Hop Icon" />
-        <strong>Hoppier</strong>
+        <strong>FreshHop</strong>
       </b-navbar-item>
     </template>
     <template slot="start">
